@@ -1,0 +1,29 @@
+<!--
+  @description       : 
+  @author            : maurizio.colombo@lynxspa.com
+  @group             : 
+  @last modified on  : 10-02-2024
+  @last modified by  : maurizio.colombo@lynxspa.com
+-->
+<template>
+    <lightning-card title ="Flat">
+     <c-picklist-type-datatable 
+     key-field="Id"
+     data={data}
+     columns={columns}
+     onsave={handleSave}
+     draft-values={draftValues}
+     >
+   </c-picklist-type-datatable>
+   </lightning-card>
+ 
+   <lightning-card title ="Grouped">
+     <c-picklist-type-datatable 
+     key-field="code"
+     data={groupedData}
+     columns={groupedCols}
+     onsave={handleSaveGrouped}
+     draft-values={draftValues2}
+     ></c-picklist-type-datatable>
+     </lightning-card>
+ </template>
