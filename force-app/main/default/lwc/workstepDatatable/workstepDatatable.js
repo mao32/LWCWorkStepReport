@@ -5,6 +5,9 @@ import updateWorkStep from '@salesforce/apex/WorkStepDatatableController.updateW
 import { notifyRecordUpdateAvailable } from "lightning/uiRecordApi";
 import { refreshApex } from "@salesforce/apex";
 
+import {loadStyle} from 'lightning/platformResourceLoader'
+import COLORS from '@salesforce/resourceUrl/colors'
+
 /***PICKLIST*****/
 import { getPicklistValues } from "lightning/uiObjectInfoApi";
 import { getObjectInfo } from "lightning/uiObjectInfoApi";
@@ -99,6 +102,8 @@ export default class WorkstepDatatable extends LightningElement {
                 label : key, 
                 fieldName:key, 
                 type:"customPick" , 
+                initialWidth: 60,
+                hideDefaultActions: true,
                 editable: {fieldName:"editCell_"+key}, 
                 typeAttributes: { 
                     placeholder: 'Choose Stage',
@@ -247,5 +252,16 @@ export default class WorkstepDatatable extends LightningElement {
          }
         
     }    
+
+
+    renderedCallback(){ 
+        if(this.isCssLoaded) return
+        this.isCssLoaded = true
+        loadStyle(this, COLORS).then(()=>{
+            console.log("Loaded Successfully")
+        }).catch(error=>{ 
+            console.error("Error in loading the colors")
+        })
+    }
    
 }

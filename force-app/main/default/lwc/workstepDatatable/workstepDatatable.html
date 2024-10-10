@@ -2,12 +2,12 @@
   @description       : 
   @author            : maurizio.colombo@lynxspa.com
   @group             : 
-  @last modified on  : 10-02-2024
+  @last modified on  : 10-10-2024
   @last modified by  : maurizio.colombo@lynxspa.com
 -->
 <template>
-    <lightning-card title ="Flat">
-     <c-picklist-type-datatable 
+    <lightning-card title ="Flat" class="slds-hide">
+     <c-picklist-type-datatable      
      key-field="Id"
      data={data}
      columns={columns}
@@ -18,12 +18,17 @@
    </lightning-card>
  
    <lightning-card title ="Grouped">
+    <div class="tableCss" >
      <c-picklist-type-datatable 
      key-field="code"
      data={groupedData}
      columns={groupedCols}
      onsave={handleSaveGrouped}
      draft-values={draftValues2}
+     max-column-width="10px"
+     min-column-width="10px"
+     hide-checkbox-column="true"     
      ></c-picklist-type-datatable>
+     </div>
      </lightning-card>
  </template>

@@ -1,0 +1,70 @@
+.tableCss table>thead .slds-th__action{
+	 /*background-color: #f1a43a;*/
+   /*background-color: #3af18c;*/
+   height: 5rem;
+   
+} 
+.tableCss .slds-table .slds-line-height_reset{
+  height: 3rem;
+}
+
+.tableCss table>thead .slds-th__action .slds-truncate{
+  -moz-transform: rotate(-90.0deg);  /* FF3.5+ */
+  -ms-transform: rotate(-90.0deg);  /* IE9+ */
+   -o-transform: rotate(-90.0deg);  /* Opera 10.5 */
+-webkit-transform: rotate(-90.0deg);  /* Safari 3.1+, Chrome */
+      transform: rotate(-90.0deg);  /* Standard */
+  
+} 
+.rotate{
+  -moz-transform: rotate(-90.0deg);  /* FF3.5+ */
+  -ms-transform: rotate(-90.0deg);  /* IE9+ */
+   -o-transform: rotate(-90.0deg);  /* Opera 10.5 */
+-webkit-transform: rotate(-90.0deg);  /* Safari 3.1+, Chrome */
+      transform: rotate(-90.0deg);  /* Standard */
+}
+.tableCss table>thead .slds-th__action:focus, .tableCss table> .slds-th__action:hover, .tableCss table>.slds-is-resizable .slds-th__action:focus, .tableCss table> .slds-is-resizable .tableCss table>.slds-th__action:focus:hover{
+	background-color:#f1a43a;
+}
+
+.datatable-CellColor{
+  color:#fff;
+  background-color:#007893;
+}
+
+.datatable-CellColor:hover{
+  color:#fff!important;;
+  background-color:#39c9e9!important;
+}
+
+.tableCss .slds-icon-utility-up svg {
+  fill: rgb(52,168,83);
+}
+
+.slds-icon-utility-up svg {
+  fill: rgb(52,168,83);
+}
+
+.tableCss .slds-icon-utility-down svg {
+  fill: rgb(239 65 70);
+}
+
+.datatable-orange{
+  color:#fff;
+  background-color:#e06000;
+}
+
+.datatable-black{
+  color:#fff;
+  background-color: black;
+}
+
+.datatable-green{
+  color:#fff;
+  background-color: green;
+}
+
+.datatable-red{
+  color:#fff;
+  background-color: red;
+}
