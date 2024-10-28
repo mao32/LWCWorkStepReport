@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>WorkStepDatatableController</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>WorkStep.Status_Color__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>Workstep_Report</members>
+        <name>CustomTab</name>
+    </types>
+    <types>
+        <members>Workstep_Report</members>
+        <name>FlexiPage</name>
+    </types>
+    <types>
+        <members>picklistTypeDatatable</members>
+        <members>workstepDatatable</members>
+        <name>LightningComponentBundle</name>
+    </types>
+    <types>
+        <members>colors</members>
+        <name>StaticResource</name>
+    </types>
+    <version>60.0</version>
+</Package>

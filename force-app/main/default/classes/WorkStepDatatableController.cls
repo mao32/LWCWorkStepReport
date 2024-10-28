@@ -2,13 +2,13 @@
  * @description       : 
  * @author            : maurizio.colombo@lynxspa.com
  * @group             : 
- * @last modified on  : 10-02-2024
+ * @last modified on  : 10-28-2024
  * @last modified by  : maurizio.colombo@lynxspa.com
 **/
 public without sharing class WorkStepDatatableController {
     @AuraEnabled(cacheable=true)   
     public static List<WorkStep> getWorkStep(boolean flag){
-         return [select id,workorderId,workorder.subject, workorder.account.name, name,Status_Color__c,StatusNum__c,Status from WorkStep];
+         return [select id,workorderId,workorder.subject, workorder.account.name, name,Status_Color__c,Status from WorkStep];
     
     }
  
