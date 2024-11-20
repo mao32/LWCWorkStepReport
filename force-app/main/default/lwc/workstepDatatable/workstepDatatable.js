@@ -19,7 +19,7 @@ const COLS=[
     {label: "Id", fieldName:"Id"},
     {label: "WorkOrderId", fieldName:"WorkOrderId"},    
     {label: "Name", fieldName:"Name"},
-    {label: "Color", fieldName:"Status_Color__c", editable: {fieldName:"editCell"}},
+    {label: "Color", fieldName:"StatusImageFormula__c", editable: {fieldName:"editCell"}},
     { label: 'Status', type: 'customPick', fieldName: 'Status', editable: true, typeAttributes: { 
         label:"picklist", 
         //value:{fieldName: "color"}, 
@@ -155,7 +155,7 @@ export default class WorkstepDatatable extends LightningElement {
             obj=wstepList.reduce((result,element)=>{
                 result.description=element.Description
                 this.workstepIds[key+"_"+element.Name]=element.Id;
-                result[element.Name]=element.Status_Color__c    
+                result[element.Name]=element.StatusImageFormula__c    
                 result['editCell_'+element.Name]= true // imposta la cella come editabile
                 result.Subject=element.WorkOrder.Subject
                 result.Account=element.WorkOrder.Account.Name

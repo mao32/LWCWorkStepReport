@@ -9,7 +9,7 @@ public without sharing class WorkStepDatatableController {
     @AuraEnabled(cacheable=true)   
     public static List<WorkStep> getWorkStep(boolean flag,String accountName, String opty){
         Map<String, Object> acctBinds = new Map<String, Object>{'accountName' => '%'+accountName+'%', 'opty'=>'%'+opty+'%'};
-        String q='select id,workorderId,workorder.OpportunityNumber__c, workorder.subject, workorder.account.name, workorder.owner.name, workorderlineitem.subject,name,Description,Status_Color__c,Status from WorkStep where workorder.account.name like :accountName and workorder.OpportunityNumber__c like :opty order by workorder.OpportunityNumber__c';
+        String q='select id,workorderId,workorder.OpportunityNumber__c, workorder.subject, workorder.account.name, workorder.owner.name, workorderlineitem.subject,name,Description,StatusImageFormula__c,Status from WorkStep where workorder.account.name like :accountName and workorder.OpportunityNumber__c like :opty order by workorder.OpportunityNumber__c';
          return Database.queryWithBinds(q,acctBinds,AccessLevel.USER_MODE);
     
     }
