@@ -2,13 +2,15 @@
  * @description       : 
  * @author            : maurizio.colombo@lynxspa.com
  * @group             : 
- * @last modified on  : 10-28-2024
+ * @last modified on  : 11-18-2024
  * @last modified by  : maurizio.colombo@lynxspa.com
 **/
 public without sharing class WorkStepDatatableController {
     @AuraEnabled(cacheable=true)   
-    public static List<WorkStep> getWorkStep(boolean flag){
-         return [select id,workorderId,workorder.subject, workorder.account.name, name,Status_Color__c,Status from WorkStep];
+    public static List<WorkStep> getWorkStep(boolean flag,String accountName, String opty){
+        Map<String, Object> acctBinds = new Map<String, Object>{'accountName' => '%'+accountName+'%', 'opty'=>'%'+opty+'%'};
+        String q='select id,workorderId,workorder.OpportunityNumber__c, workorder.subject, workorder.account.name, workorder.owner.name, workorderlineitem.subject,name,Description,Status_Color__c,Status from WorkStep where workorder.account.name like :accountName and workorder.OpportunityNumber__c like :opty order by workorder.OpportunityNumber__c';
+         return Database.queryWithBinds(q,acctBinds,AccessLevel.USER_MODE);
     
     }
  

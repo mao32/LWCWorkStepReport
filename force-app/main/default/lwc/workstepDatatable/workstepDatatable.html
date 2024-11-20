@@ -2,10 +2,19 @@
   @description       : 
   @author            : maurizio.colombo@lynxspa.com
   @group             : 
-  @last modified on  : 10-10-2024
+  @last modified on  : 11-18-2024
   @last modified by  : maurizio.colombo@lynxspa.com
 -->
 <template>
+  <lightning-layout>
+    <lightning-layout-item>
+  <lightning-input value={accountNameFilter} label="Account" onchange={handleAccountChange}></lightning-input>
+</lightning-layout-item>
+<lightning-layout-item>
+  <lightning-input value={opportunityFilter} label="Opportunity" onchange={handleOptyChange}></lightning-input>
+</lightning-layout-item>
+</lightning-layout>
+
     <lightning-card title ="Flat" class="slds-hide">
      <c-picklist-type-datatable      
      key-field="Id"

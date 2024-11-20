@@ -1,4 +1,8 @@
 <template>
+    <lightning-card title="Set status">
+        <lightning-layout multiple-rows >
+            
+    <lightning-layout-item size="12" padding="around-small">
     <lightning-combobox 
         name="picklist" 
         data-inputable="true" 
@@ -8,4 +12,10 @@
         options={typeAttributes.options} variant='label-hidden'
         dropdown-alignment="auto">
     </lightning-combobox>
+</lightning-layout-item>
+<lightning-layout-item size="12" padding="around-small" >
+    <lightning-textarea label="Description" value={typeAttributes.description} type="textArea"   ></lightning-textarea>
+</lightning-layout-item>
+</lightning-layout>
+</lightning-card>
 </template>

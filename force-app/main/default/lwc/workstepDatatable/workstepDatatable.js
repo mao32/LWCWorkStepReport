@@ -17,19 +17,23 @@ import WORKSTEP_OBJECT from "@salesforce/schema/WorkStep";
 /********/
 const COLS=[
     {label: "Id", fieldName:"Id"},
-    {label: "WorkOrderId", fieldName:"WorkOrderId"},
+    {label: "WorkOrderId", fieldName:"WorkOrderId"},    
     {label: "Name", fieldName:"Name"},
     {label: "Color", fieldName:"Status_Color__c", editable: {fieldName:"editCell"}},
     { label: 'Status', type: 'customPick', fieldName: 'Status', editable: true, typeAttributes: { 
         label:"picklist", 
         //value:{fieldName: "color"}, 
         //placeholder: "CIAO", 
+        description: "CIAO",
         options:{fieldName:"pickListOptions"} }}
 ]
-const detailCOLS=[
-    {fieldName:"WorkOrderId", label:"WorkOrderId"},
-    {fieldName:"Subject", label:"Subject"},
-    {fieldName:"Account", label: "Account"}
+//clonne nella parte sinistra non grouped per workSTEP
+const detailCOLS=[ 
+    //{fieldName:"WorkOrderId", label:"WorkOrderId",hideDefaultActions: true,wrapText: true},
+    {fieldName:"Opportunity", label:"Opportunity",hideDefaultActions: true,wrapText: true},
+    {fieldName:"Subject", label:"Subject",hideDefaultActions: true,wrapText: true},
+    {fieldName:"Account", label: "Account",hideDefaultActions: true,wrapText: true},
+    {fieldName:"Owner", label: "Owner",hideDefaultActions: true,wrapText: true}
 ];
 //const sampleData=[{"WorkOrderId":'work1', '0': 'stato 1', '1':'stato 2' }, {"WorkOrderId":'work1', '0': 'stato 1', '1':'stato 2' }]; //dato raggruppato
 export default class WorkstepDatatable extends LightningElement {
@@ -49,6 +53,9 @@ export default class WorkstepDatatable extends LightningElement {
     stepCols=[]; // colonne STEP
     groupedCols; //=[{fieldName:"WorkOrderId", label:"WorkOrderId"}]; //colonne
 
+    //FILTRI
+    accountNameFilter="";
+    opportunityFilter="";
 
      /******GET PICKLIST VALUES*********/
 
@@ -72,8 +79,16 @@ export default class WorkstepDatatable extends LightningElement {
  
          }
      }
-    
-    @wire(getWorkStep, {flag: '$pick'})
+    handleAccountChange(event) {
+        this.accountNameFilter = event.detail.value;
+        //console.log("variabile account set "+this.accountNameFilter)
+    }
+
+    handleOptyChange(event) {
+        this.opportunityFilter = event.detail.value;       
+    }
+
+    @wire(getWorkStep, {flag: '$pick',accountName:'$accountNameFilter', opty:'$opportunityFilter'})
     wireResponse(result){
         let data=result.data
         if(!data || !this.pick) return;
@@ -108,7 +123,8 @@ export default class WorkstepDatatable extends LightningElement {
                 typeAttributes: { 
                     placeholder: 'Choose Stage',
                     label:"picklist",  
-                    options:{fieldName:"pickListOptions"} 
+                    options:{fieldName:"pickListOptions"},
+                    description:{fieldName:"description"} 
                     
             }}
         })
@@ -122,6 +138,7 @@ export default class WorkstepDatatable extends LightningElement {
         // workorder group
         let groupedWork= data.reduce((result, currentValue) => { 
             (result[currentValue['WorkOrderId']] = result[currentValue['WorkOrderId']] || []).push(currentValue);
+            //(result[currentValue['Opportunity']] = result[currentValue['Opportunity']] || []).push(currentValue);
             return result;
           }, {});
         
@@ -136,11 +153,14 @@ export default class WorkstepDatatable extends LightningElement {
             }   
             let wstepList=groupedWork[key] 
             obj=wstepList.reduce((result,element)=>{
+                result.description=element.Description
                 this.workstepIds[key+"_"+element.Name]=element.Id;
                 result[element.Name]=element.Status_Color__c    
-                result['editCell_'+element.Name]= true
+                result['editCell_'+element.Name]= true // imposta la cella come editabile
                 result.Subject=element.WorkOrder.Subject
                 result.Account=element.WorkOrder.Account.Name
+                result.Opportunity=element.WorkOrder.OpportunityNumber__c
+                result.Owner=element.WorkOrder.Owner.Name
                 return result
             },obj)        
             return  obj        
