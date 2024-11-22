@@ -31,7 +31,9 @@ const COLS=[
 const detailCOLS=[ 
     //{fieldName:"WorkOrderId", label:"WorkOrderId",hideDefaultActions: true,wrapText: true},
     {fieldName:"Opportunity", label:"Opportunity",hideDefaultActions: true,wrapText: true},
-    {fieldName:"Subject", label:"Subject",hideDefaultActions: true,wrapText: true},
+    //{fieldName:"Subject", label:"Subject",hideDefaultActions: true,wrapText: true},
+    {fieldName:"WorkOrderNum", label:"Work Order Num.",hideDefaultActions: true,wrapText: true},
+    {fieldName:"Sample", label:"Sample",hideDefaultActions: true,wrapText: true},
     {fieldName:"Account", label: "Account",hideDefaultActions: true,wrapText: true},
     {fieldName:"Owner", label: "Owner",hideDefaultActions: true,wrapText: true}
 ];
@@ -91,6 +93,8 @@ export default class WorkstepDatatable extends LightningElement {
     @wire(getWorkStep, {flag: '$pick',accountName:'$accountNameFilter', opty:'$opportunityFilter'})
     wireResponse(result){
         let data=result.data
+        console.log("OUTOUT WIRE "+JSON.stringify(data))
+
         if(!data || !this.pick) return;
         this.wiredData=result
         let data2=data.map((element) => {
@@ -137,12 +141,13 @@ export default class WorkstepDatatable extends LightningElement {
         //DATA COMPOSITION
         // workorder group
         let groupedWork= data.reduce((result, currentValue) => { 
-            (result[currentValue['WorkOrderId']] = result[currentValue['WorkOrderId']] || []).push(currentValue);
-            //(result[currentValue['Opportunity']] = result[currentValue['Opportunity']] || []).push(currentValue);
+            //(result[currentValue['WorkOrderId']] = result[currentValue['WorkOrderId']] || []).push(currentValue);
+            //(result[currentValue['WorkOrder']['OpportunityNumber__c']] = result[currentValue['WorkOrder']['OpportunityNumber__c']] || []).push(currentValue);
+            (result[currentValue['TICWSGroup__c']] = result[currentValue['TICWSGroup__c']] || []).push(currentValue);
             return result;
           }, {});
         
-        //console.log(" GROUPED DATA grezzo"+JSON.stringify(groupedWork))
+        console.log(" GROUPED DATA grezzo"+JSON.stringify(groupedWork))
 
         this.groupedData=Object.keys(groupedWork).map( (key,idx) => {
             let obj= {
@@ -157,7 +162,10 @@ export default class WorkstepDatatable extends LightningElement {
                 this.workstepIds[key+"_"+element.Name]=element.Id;
                 result[element.Name]=element.StatusImageFormula__c    
                 result['editCell_'+element.Name]= true // imposta la cella come editabile
-                result.Subject=element.WorkOrder.Subject
+                //result.Subject=element.WorkOrder.Subject
+                result.Subject=element.WorkOrderLineItem?.Subject
+                result.WorkOrderNum=element.WorkOrder.WorkOrderNumber
+                result.Sample=element.WorkOrderLineItem?.TICSample__c
                 result.Account=element.WorkOrder.Account.Name
                 result.Opportunity=element.WorkOrder.OpportunityNumber__c
                 result.Owner=element.WorkOrder.Owner.Name
@@ -275,13 +283,29 @@ export default class WorkstepDatatable extends LightningElement {
 
 
     renderedCallback(){ 
-        if(this.isCssLoaded) return
-        this.isCssLoaded = true
-        loadStyle(this, COLORS).then(()=>{
-            console.log("Loaded Successfully")
-        }).catch(error=>{ 
-            console.error("Error in loading the colors")
-        })
+        //if(this.isCssLoaded) return
+        if(!this.isCssLoaded){
+            this.isCssLoaded = true
+            loadStyle(this, COLORS).then(()=>{
+                console.log("Loaded Successfully")
+            }).catch(error=>{ 
+                console.error("Error in loading the colors")
+            })
+        }
+
+        const contentBlockClasslist = this.template.querySelector('table')?.classList;
+        console.log('contentBlockClasslist: '+contentBlockClasslist);
+        // toggle the hidden class
+        contentBlockClasslist?.toggle('slds-truncate');
     }
-   
+    /*
+    renderedCallback(){
+        const contentBlockClasslist = this.template.querySelector(
+            '.tableCss table>thead .slds-th__action .slds-truncate'
+        )?.classList;
+        console.log('contentBlockClasslist: '+contentBlockClasslist);
+        // toggle the hidden class
+        //contentBlockClasslist?.toggle('slds-truncate');
+    }
+        */
 }

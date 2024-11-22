@@ -2,16 +2,17 @@
 	 /*background-color: #f1a43a;*/
    /*background-color: #3af18c;*/
    /*height: 5rem;*/
-   height: 8rem;
+   height: 12rem;
    
 } 
 .tableCss .slds-table .slds-line-height_reset{
   /*height: 3rem;*/
-  height: 6rem;
+  height: 10rem;
 }
 
+
 .tableCss table>thead .slds-th__action .slds-truncate{
-  overflow: auto !important; 
+  overflow: visible !important;
   -moz-transform: rotate(-90.0deg);  /* FF3.5+ */
   -ms-transform: rotate(-90.0deg);  /* IE9+ */
    -o-transform: rotate(-90.0deg);  /* Opera 10.5 */
