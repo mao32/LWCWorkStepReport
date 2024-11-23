@@ -1,4 +1,16 @@
 <template>
+<!--
+    <c-workstep-status-form       
+        data-inputable="true"  
+        label={typeAttributes.label}
+        value={editedValue} 
+        placeholder={typeAttributes.placeholder} 
+        options={typeAttributes.options}
+        description={typeAttributes.description}
+    
+    ></c-workstep-status-form>
+-->
+ <!-- old component-->
     <lightning-card title="Set status">
         <lightning-layout multiple-rows >
             
@@ -14,8 +26,13 @@
     </lightning-combobox>
 </lightning-layout-item>
 <lightning-layout-item size="12" padding="around-small" >
-    <lightning-textarea label="Description" value={typeAttributes.description} type="textArea"   ></lightning-textarea>
+    <!--<lightning-textarea label="Description" value={typeAttributes.description}   ></lightning-textarea>-->
+    <c-workstep-status-form  label="Description" value={typeAttributes.description}
+         workstepid={typeAttributes.workstepId} 
+         groupkey={typeAttributes.groupkey} 
+         step={typeAttributes.step} code={typeAttributes.code} statusvalue={editedValue}> </c-workstep-status-form>
 </lightning-layout-item>
 </lightning-layout>
 </lightning-card>
+
 </template>

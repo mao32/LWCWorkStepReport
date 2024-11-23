@@ -5,7 +5,9 @@
         <name>ApexClass</name>
     </types>
     <types>
-        <members>WorkStep.Status_Color__c</members>
+        <members>WorkStep.StatusImageFormula__c</members>
+        <members>WorkStep.TICWSGroup__c</members>
+        <members>WorkOrderLineItem.TICSample__c</members>
         <name>CustomField</name>
     </types>
     <types>
@@ -19,6 +21,7 @@
     <types>
         <members>picklistTypeDatatable</members>
         <members>workstepDatatable</members>
+        <members>workstepStatusForm</members>
         <name>LightningComponentBundle</name>
     </types>
     <types>

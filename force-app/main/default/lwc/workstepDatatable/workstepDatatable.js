@@ -47,7 +47,7 @@ export default class WorkstepDatatable extends LightningElement {
     wiredData;
     defaultRecordTypeId;
     draftValues;
-    draftValues2;
+    draftValues2=[];
     pick=false;
     workstepIds={};
 
@@ -128,7 +128,12 @@ export default class WorkstepDatatable extends LightningElement {
                     placeholder: 'Choose Stage',
                     label:"picklist",  
                     options:{fieldName:"pickListOptions"},
-                    description:{fieldName:"description"} 
+                    //description:{fieldName:"Description"} ,
+                    workstepId:{fieldName:key+"id"},
+                    groupkey:{fieldName:"GroupKey"},
+                    step:{fieldName: key+"step"},
+                    description:{fieldName: key+"desc"},
+                    code:{fieldName:"code"}
                     
             }}
         })
@@ -158,9 +163,13 @@ export default class WorkstepDatatable extends LightningElement {
             }   
             let wstepList=groupedWork[key] 
             obj=wstepList.reduce((result,element)=>{
-                result.description=element.Description
-                this.workstepIds[key+"_"+element.Name]=element.Id;
+                console.log("Workstep ID "+element.Id)
+                result[element.Name+"id"]=element.Id
+                result[element.Name+"desc"]=element.Description
+                result.GroupKey=key+"_"+element.Name
+                this.workstepIds[key+"_"+element.Name]={id:element.Id, description:element.Description}                
                 result[element.Name]=element.StatusImageFormula__c    
+                result[element.Name+"step"]=element.Name     
                 result['editCell_'+element.Name]= true // imposta la cella come editabile
                 //result.Subject=element.WorkOrder.Subject
                 result.Subject=element.WorkOrderLineItem?.Subject
@@ -178,6 +187,7 @@ export default class WorkstepDatatable extends LightningElement {
         //console.log("SEQ - DEFINE PICKLIST OPTIONS");
     }
 
+    //UTILIZZATO x salvataggio flat
     async handleSave(event) {
         //console.log("--handleSave "+JSON.stringify(event));
         const updatedFields = event.detail.draftValues;
@@ -223,21 +233,116 @@ export default class WorkstepDatatable extends LightningElement {
         
     }
 
+    //handler to handle cell changes & update values in draft values
+    handleDescriptionChange(event) {
+        //this.updateDraftValues(event.detail.draftValues[0]);
+        //let draftValues = event.detail.draftValues;
+        console.log("ChangeCell EVENT "+JSON.stringify(event.detail));
+        console.log("ChangeCell EVENT FIELD MODIFIED "+JSON.stringify(event.target.field))
+        const { workstepId, description,value,step,groupKey,code,statusValue } = event.detail;
+        console.log('CUSTOM TYPE A' + workstepId + ' description '+ description, ' KEY '+groupKey+ " STEP " +step+ " STATUS "+ value+" CODE "+code);
+        let draftItem= { code: code}
+        //draftItem[step]=value
+        draftItem[step+"desc"]=description
+        draftItem[step+"id"]=workstepId
+        draftItem[step]=statusValue
+
+        this.updateDraftValues(draftItem);
+        console.log("UPDATE DRAFT "+JSON.stringify(this.draftValues2))
+        /*
+        let draftItem= {
+            code: key, 
+            console.log("Workstep ID "+workstepId)
+            WorkstepId=workstepId
+            //Description=element.Description
+            GroupKey=key+"_"+element.Name
+            this.workstepIds[key+"_"+element.Name]={id:element.Id, description:element.Description}                
+            result[element.Name]=element.StatusImageFormula__c    
+            result['editCell_'+element.Name]= true // imposta la cella come editabile
+            //result.Subject=element.WorkOrder.Subject
+            result.Subject=element.WorkOrderLineItem?.Subject
+            result.WorkOrderNum=element.WorkOrder.WorkOrderNumber
+            result.Sample=element.WorkOrderLineItem?.TICSample__c
+            result.Account=element.WorkOrder.Account.Name
+            result.Opportunity=element.WorkOrder.OpportunityNumber__c
+            result.Owner=element.WorkOrder.Owner.Name
+            return result
+        },obj)        
+        return  obj   
+
+*/
+        /*
+        draftValues.forEach(ele=>{
+            this.updateDraftValues(ele);
+        })
+            */
+    }
+
+    updateDraftValues(updateItem) {
+        let draftValueChanged = false;
+        let copyDraftValues = [...this.draftValues2];
+        //store changed value to do operations
+        //on save. This will enable inline editing &
+        //show standard cancel & save button
+        copyDraftValues.forEach(item => {
+            if (item.code === updateItem.code) {
+                for (let field in updateItem) {
+                    item[field] = updateItem[field];
+                }
+                draftValueChanged = true;
+            }
+        });
+ 
+        if (draftValueChanged) {
+            this.draftValues2 = [...copyDraftValues];
+        } else {
+            this.draftValues2 = [...copyDraftValues, updateItem];
+        }
+    }
+//handleCell2 restituisce il draft dopo la modifica di una cella
+    handleCellChange(event){
+        console.log("handle change 2")        
+        
+        let draftValues = event.detail.draftValues;
+        console.log("DRAFT in arrivo "+JSON.stringify(draftValues))
+        console.log("FIELD MODIFIED "+JSON.stringify(event.target.dataset.field))
+
+        draftValues.forEach(ele=>{
+            this.updateDraftValues(ele);
+        })
+            
+        console.log("RECORD TO UPDATE "+JSON.stringify(this.draftValues2))
+    }
+
     async handleSaveGrouped(event) {
         //console.log("--handleSave "+JSON.stringify(event));
         //const updatedFields = event.detail.draftValues;
-        const updatedGroupedFields = event.detail.draftValues;
-        //console.log("RECORD TO UPDATE "+JSON.stringify(updatedGroupedFields))
+        let draftValues = event.detail.draftValues;
+        draftValues.forEach(ele=>{
+            this.updateDraftValues(ele);
+        })
+        const updatedGroupedFields=this.draftValues2;
+        //updatedGroupedFields = this.template.querySelector('c-picklist-type-datatable').draftValues;
+        console.log("RECORD TO UPDATE "+JSON.stringify(updatedGroupedFields))
         
         let updatedFields=[];
         updatedGroupedFields.forEach( (groupRow) =>{
             Object.keys(groupRow).map( (step) =>{
-                if(this.groupedCols.some( col => col.fieldName==step))
-                    updatedFields.push({Id: this.workstepIds [groupRow.code+"_"+step], Status: groupRow[step]})
+                if(this.groupedCols.some( col => col.fieldName==step)){
+                    console.log("ROW "+JSON.stringify(groupRow)+" STEP "+step)
+                    updatedFields.push({ 
+                        Id: this.workstepIds [groupRow.code+"_"+step]?.id, 
+                        //Description: this.workstepIds [groupRow.code+"_"+step].description , 
+                        //Id: groupRow[step+"id"],
+                        Description:groupRow[step+"desc"],
+                        Status: groupRow[step]
+                    })
+                }
             })
         })
         
         //console.log("RECORD TO UPDATE AFTER TRANSFORM"+JSON.stringify(this.workstepIds)+" ARRAY " +JSON.stringify(updatedFields))
+        console.log("RECORD TO UPDATE AFTER TRANSFORM"+JSON.stringify(updatedFields))
 
         // Prepare the record IDs for notifyRecordUpdateAvailable()
         const notifyChangeIds = updatedFields.map(row => { return { "recordId": row.Id } });

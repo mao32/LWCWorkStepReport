@@ -2,10 +2,10 @@
  * @description       : 
  * @author            : maurizio.colombo@lynxspa.com
  * @group             : 
- * @last modified on  : 11-20-2024
+ * @last modified on  : 11-23-2024
  * @last modified by  : maurizio.colombo@lynxspa.com
 **/
-public without sharing class WorkStepDatatableController {
+public with sharing class WorkStepDatatableController {
     @AuraEnabled(cacheable=true)   
     public static List<WorkStep> getWorkStep(boolean flag,String accountName, String opty){
         Map<String, Object> acctBinds = new Map<String, Object>{'accountName' => '%'+accountName+'%', 'opty'=>'%'+opty+'%'}; //, 'SST' => '%'}; //aggiungere valore SST

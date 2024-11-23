@@ -2,7 +2,7 @@
   @description       : 
   @author            : maurizio.colombo@lynxspa.com
   @group             : 
-  @last modified on  : 11-18-2024
+  @last modified on  : 11-23-2024
   @last modified by  : maurizio.colombo@lynxspa.com
 -->
 <template>
@@ -29,14 +29,18 @@
    <lightning-card title ="Grouped">
     <div class="tableCss" >
      <c-picklist-type-datatable 
-     key-field="code"
-     data={groupedData}
-     columns={groupedCols}
-     onsave={handleSaveGrouped}
-     draft-values={draftValues2}
-     max-column-width="10px"
-     min-column-width="10px"
-     hide-checkbox-column="true"     
+        data-inputable="true"
+        key-field="code"
+        data={groupedData}
+        onchangedescription={handleDescriptionChange}
+        oncellchange={handleCellChange}        
+        columns={groupedCols}
+        onsave={handleSaveGrouped}
+        draft-values={draftValues2}
+        max-column-width="10px"
+        min-column-width="10px"
+        hide-checkbox-column="true" 
+
      ></c-picklist-type-datatable>
      </div>
      </lightning-card>
