@@ -93,7 +93,7 @@ export default class WorkstepDatatable extends LightningElement {
     @wire(getWorkStep, {flag: '$pick',accountName:'$accountNameFilter', opty:'$opportunityFilter'})
     wireResponse(result){
         let data=result.data
-        console.log("OUTOUT WIRE "+JSON.stringify(data))
+        //console.log("OUTOUT WIRE "+JSON.stringify(data))
 
         if(!data || !this.pick) return;
         this.wiredData=result
@@ -152,7 +152,7 @@ export default class WorkstepDatatable extends LightningElement {
             return result;
           }, {});
         
-        console.log(" GROUPED DATA grezzo"+JSON.stringify(groupedWork))
+        //console.log(" GROUPED DATA grezzo"+JSON.stringify(groupedWork))
 
         this.groupedData=Object.keys(groupedWork).map( (key,idx) => {
             let obj= {
@@ -233,6 +233,7 @@ export default class WorkstepDatatable extends LightningElement {
         
     }
 
+    //DEPRECATED
     //handler to handle cell changes & update values in draft values
     handleDescriptionChange(event) {
         //this.updateDraftValues(event.detail.draftValues[0]);
@@ -308,6 +309,10 @@ export default class WorkstepDatatable extends LightningElement {
         console.log("FIELD MODIFIED "+JSON.stringify(event.target.dataset.field))
 
         draftValues.forEach(ele=>{
+            //cerco id se non già presente
+            Object.keys(ele).forEach(field =>{
+                if(this.workstepIds[ele.code+"_"+field]) ele[field+"id"]=this.workstepIds[ele.code+"_"+field].id
+            })            
             this.updateDraftValues(ele);
         })
             
@@ -324,22 +329,46 @@ export default class WorkstepDatatable extends LightningElement {
         const updatedGroupedFields=this.draftValues2;
         //updatedGroupedFields = this.template.querySelector('c-picklist-type-datatable').draftValues;
         console.log("RECORD TO UPDATE "+JSON.stringify(updatedGroupedFields))
-        
-        let updatedFields=[];
+ 
+        let mapRecord={}
+        let updatedFields=[]
         updatedGroupedFields.forEach( (groupRow) =>{
-            Object.keys(groupRow).map( (step) =>{
-                if(this.groupedCols.some( col => col.fieldName==step)){
-                    console.log("ROW "+JSON.stringify(groupRow)+" STEP "+step)
-                    updatedFields.push({ 
-                        Id: this.workstepIds [groupRow.code+"_"+step]?.id, 
-                        //Description: this.workstepIds [groupRow.code+"_"+step].description , 
-                        //Id: groupRow[step+"id"],
-                        Description:groupRow[step+"desc"],
-                        Status: groupRow[step]
-                    })
-                }
-            })
+            Object.keys(groupRow).forEach( (step) =>{
+                let fieldStep=""
+                //check STATUS
+                if(this.groupedCols.some( col => {
+                    if(col.fieldName==step ){
+                         fieldStep=col.fieldName
+                        return true
+                    }
+                    else return false
+                })){
+                    //console.log("ungroup step ROW "+JSON.stringify(groupRow)+" STEP "+step)
+                    if(!mapRecord[groupRow[fieldStep+"id"]]) mapRecord[groupRow[fieldStep+"id"]]={Id: groupRow[fieldStep+"id"], Status:groupRow[fieldStep]}
+                    else mapRecord[groupRow[fieldStep+"id"]].Status= groupRow[fieldStep]
+                }  //check DESC
+                else if(this.groupedCols.some( col => {
+                    if( (col.fieldName+"desc")==step){
+                         fieldStep=col.fieldName
+                        return true
+                    }
+                    else return false
+                })){
+                    //console.log("ungroup desc ROW "+JSON.stringify(groupRow)+" STEP "+step)
+                    if(!mapRecord[groupRow[fieldStep+"id"]]) mapRecord[groupRow[fieldStep+"id"]]={Id: groupRow[fieldStep+"id"], Description:groupRow[fieldStep+"desc"]}
+                    else mapRecord[groupRow[fieldStep+"id"]].Description=groupRow[fieldStep+"desc"]//{...mapRecord[groupRow[fieldStep+"id"]], ...{Description:}}
+                }            
+            }) //foreach field
+        }) //foreach row
+        //console.log("MAP RECORD "+JSON.stringify(mapRecord))
+        Object.keys(mapRecord).forEach(wstepId=>{
+            updatedFields.push(mapRecord[wstepId])
         })
+        
+        
+        console.log("update to process "+JSON.stringify(updatedFields))
+        
+        
         
         //console.log("RECORD TO UPDATE AFTER TRANSFORM"+JSON.stringify(this.workstepIds)+" ARRAY " +JSON.stringify(updatedFields))
         console.log("RECORD TO UPDATE AFTER TRANSFORM"+JSON.stringify(updatedFields))

@@ -20,20 +20,28 @@ export default class WorkstepStatusForm extends LightningElement {
     handleChange(context){
         console.log("handleChange description")
         this.description=context.detail.value
-        const event = new CustomEvent('changedescription', {
+        //const event = new CustomEvent('changedescription', {
+        const event = new CustomEvent('cellchange', {
             composed: true,
             bubbles: true,
             cancelable: true,
             detail: {
-                workstepId: this.workstepid,
-                description: this.description,
-                value:this.value,
-                groupKey:this.groupkey,
-                step:this.step,
-                code:this.code,
-                statusValue:this.statusvalue
-            },
+                draftValues: [{
+                    /*
+                    workstepId: this.workstepid,
+                    description: this.description,
+                    value:this.value,
+                    groupKey:this.groupkey,
+                    step:this.step,                    
+                    */
+                    code:this.code,
+                    [this.step+"desc"]: this.description,
+                    [this.step+"id"]: this.workstepid,                    
+                    
+                }
+            ]},
         });
+        
         this.dispatchEvent(event);
     }
 }
